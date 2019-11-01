@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getComments(){
-        Call<List<Comment>> call=exampleAPI.getComment(3);
+        Call<List<Comment>> call=exampleAPI.getComment(3,"id","desc");
 
         call.enqueue(new Callback<List<Comment>>() {
             @Override
