@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -30,8 +33,12 @@ public class MainActivity extends AppCompatActivity {
 
         //getPosts();
         //getComments();
-        createPost();
-        createPostFUE();
+        //createPost();
+        //createPostFUE();
+        //putPost();
+        //patchPost();
+        deletePost();
+
     }
 
     private void getPosts() {
@@ -97,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createPost() {
+
         final Post post = new Post(23, "NEW TITLE", "NEW TEXT");
 
         Call<Post> call = exampleAPI.createPost(post);
@@ -111,10 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
                 Post postresponse = response.body();
 
-
                 String content = "";
 
-                content += "Code: " + response.code()+"\n";
+                content += "Code: " + response.code() + "\n";
 
                 content += "ID: " + postresponse.getId() + "\n";
                 content += "User ID: " + postresponse.getUserId() + "\n";
@@ -132,9 +139,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void createPostFUE(){
+    private void createPostFUE() {
 
-        Call<Post> call = exampleAPI.createPostFUE(23,"NEW TITLE","NEW TEXT");
+        Call<Post> call = exampleAPI.createPostFUE(23, "NEW TITLE", "NEW TEXT");
 
         call.enqueue(new Callback<Post>() {
             @Override
@@ -149,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String content = "";
 
-                content += "Code: " + response.code()+"\n";
+                content += "Code: " + response.code() + "\n";
 
                 content += "ID: " + postresponse.getId() + "\n";
                 content += "User ID: " + postresponse.getUserId() + "\n";
@@ -167,6 +174,98 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void putPost() {
+        Post post = new Post(12, null, "TE");
+        Call<Post> call = exampleAPI.putPost(1, post);
 
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
 
+                if (!response.isSuccessful()) {
+                    textView.setText("Code: " + response.code());
+                    return;
+                }
+
+                Post postresponse = response.body();
+
+                String content = "";
+
+                content += "Code: " + response.code() + "\n";
+                content += "ID: " + postresponse.getId() + "\n";
+                content += "User ID: " + postresponse.getUserId() + "\n";
+                content += "Title: " + postresponse.getTitle() + "\n";
+                content += "Text: " + postresponse.getText() + "\n\n";  //  content string is the final result
+
+                textView.setText(content);
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                textView.setText(t.getMessage());
+            }
+        });
+    }
+
+    private void patchPost() {
+
+        /*
+        //If you want to pass null values too use the below code and replace the exampleAPI with the exampleAPI2 wherever required further.
+        Gson gson=new GsonBuilder().serializeNulls().create();
+
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl("https://jsonplaceholder.typicode.com/")
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        ExampleAPI exampleAPI2=retrofit.create(ExampleAPI.class);
+        */
+
+        Post post = new Post(12, null, "TE");
+        Call<Post> call = exampleAPI.patchPost(1, post);
+
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+
+                if (!response.isSuccessful()) {
+                    textView.setText("Code: " + response.code());
+                    return;
+                }
+
+                Post postresponse = response.body();
+
+                String content = "";
+
+                content += "Code: " + response.code() + "\n";
+                content += "ID: " + postresponse.getId() + "\n";
+                content += "User ID: " + postresponse.getUserId() + "\n";
+                content += "Title: " + postresponse.getTitle() + "\n";
+                content += "Text: " + postresponse.getText() + "\n\n";  //  content string is the final result
+
+                textView.setText(content);
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                textView.setText(t.getMessage());
+            }
+        });
+    }
+
+    private void deletePost(){
+        Call<Void> call=exampleAPI.deletePost(5);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                textView.setText("Code: "+response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                textView.setText(t.getMessage());
+            }
+        });
+
+     }
 }
